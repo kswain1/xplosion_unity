@@ -21,6 +21,8 @@ public class SwingController : MonoBehaviour {
 	public Text hip_debug;
 	public Text swing_accel;
 	public Text hip_accel;
+	public Text rhythm_score; 
+	private double swing_data, hip_data; 
 	private BatManager batManager;
 
 	void Start()
@@ -51,7 +53,9 @@ public class SwingController : MonoBehaviour {
 			JSONArray accelXJson = jsonInput[swinglist-1]["accelx"].AsArray;
 			JSONArray accelYJson = jsonInput[swinglist-1]["accely"].AsArray;
 			JSONArray accelZJson = jsonInput[swinglist-1]["accelz"].AsArray;
-			Debug.Log("jsoninp swing:"+jsonInput.ToString());
+			Debug.Log ("swing list x" + (accelXJson).ToString());
+			Debug.Log ("swing list y " + (accelYJson).ToString());
+			Debug.Log ("swing list z" + (accelZJson).ToString());
 
 
 			float[] accelX, accelY, accelZ;
@@ -67,8 +71,8 @@ public class SwingController : MonoBehaviour {
 
 			List<int> magnitude = vector_mag (accelX, accelY, accelZ);
 			int max_accel = max_value (magnitude); 
-			swing_accel.text = (((int)9.8 * max_accel).ToString() + "Gs");
-
+			swing_accel.text = (((int)max_accel).ToString() + "Gs");
+			swing_data =(double) max_accel;
 
 
 
@@ -115,7 +119,16 @@ public class SwingController : MonoBehaviour {
 //			batManager.SetRotationArrays(rotX, rotY, rotZ);
 //			batManager.SetPositionArrays(posX, posY, posZ);
 //			// Execute Bat Animation
-			batManager.GenerateAnimation();
+			//batManager.GenerateAnimation();
+			Debug.Log ("hip and swing data log inside of function");
+			Debug.Log (hip_data);
+			Debug.Log (swing_data);
+			if (hip_data >= swing_data) {
+				rhythm_score.text = ((double)swing_data / hip_data * 100).ToString ();
+			} else { rhythm_score.text = ((double)hip_data/swing_data *100).ToString();
+			}
+
+
 		}
 		else
 		{
@@ -165,13 +178,12 @@ public class SwingController : MonoBehaviour {
 
 
 
-			JSONArray accelXJson = jsonInput[swinglist]["accelx"].AsArray;
-			JSONArray accelYJson = jsonInput[swinglist]["accely"].AsArray;
-			JSONArray accelZJson = jsonInput[swinglist]["accelz"].AsArray;
-			Debug.Log("jsoninp:"+jsonInput.ToString());
-			Debug.Log("swingdata:"+jsonInput[2]["name"].ToString());
-			string hello = jsonInput [swinglist].ToString();
-			Debug.Log (hello);
+			JSONArray accelXJson = jsonInput[swinglist-1]["accelx"].AsArray;
+			JSONArray accelYJson = jsonInput[swinglist-1]["accely"].AsArray;
+			JSONArray accelZJson = jsonInput[swinglist-1]["accelz"].AsArray;
+			Debug.Log ("hip list x" + (accelXJson).ToString());
+			Debug.Log ("hip list y " + (accelYJson).ToString());
+			Debug.Log ("hip list z" + (accelZJson).ToString());
 
 
 			float[] accelX, accelY, accelZ;
@@ -187,7 +199,18 @@ public class SwingController : MonoBehaviour {
 
 			List<int> magnitude = vector_mag (accelX, accelY, accelZ);
 			int max_accel = max_value (magnitude); 
-			hip_accel.text = (((int)9.8 * max_accel).ToString() + "Gs");
+			hip_accel.text = (((int)max_accel).ToString() + "Gs");
+			hip_data = (double) max_accel;
+			Debug.Log ("hip data");
+			Debug.Log (hip_data);
+			Debug.Log ("hip and swing data log inside of function");
+			Debug.Log (hip_data);
+			Debug.Log (swing_data);
+			if (hip_data >= swing_data) {
+				rhythm_score.text = ((int) ((double)swing_data / hip_data * 100)).ToString ();
+			} else { rhythm_score.text = ((int) ((double)hip_data/swing_data *100)).ToString();
+			}
+
 			 
 		}
 		else
