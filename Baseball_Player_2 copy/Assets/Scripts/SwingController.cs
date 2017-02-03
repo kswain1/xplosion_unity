@@ -12,8 +12,8 @@ public class SwingController : MonoBehaviour {
         "posX":xpositionVector, "posY":ypositionVector, "posZ":zpositionVector,
         "speed":sweetSpotVelocity}
      **/
-	private string hip_url = "https://obscure-headland-45385.herokuapp.com/hips";
-	private string url = "https://obscure-headland-45385.herokuapp.com/swings";
+	private string hip_url = "https://obscure-headland-45385.herokuapp.com/hips"; // right number
+	private string url = "https://obscure-headland-45385.herokuapp.com/swings"; // left number
 	private GameObject player;
 	private Animator playerAnimator;
 	public Text txt_debug;
@@ -24,7 +24,7 @@ public class SwingController : MonoBehaviour {
 	{
 		player = GameObject.FindWithTag("Player");
 		playerAnimator = player.GetComponent<Animator>();
-		batManager = GameObject.FindGameObjectWithTag("Bat").GetComponent<BatManager>();
+//		batManager = GameObject.FindGameObjectWithTag("Bat").GetComponent<BatManager>();
 
 	}
 	public IEnumerator GetData(WWW conn)
@@ -36,6 +36,7 @@ public class SwingController : MonoBehaviour {
 		if (conn.error == null) {
 			// Request OK
 			Debug.Log("200");
+			Debug.Log("json:"+conn.text);
 			playerAnimator.SetTrigger("swingIt");
 			// Convert Json file into Jsonnode Object
 			JSONNode jsonInput = JSON.Parse(conn.text);
@@ -110,11 +111,14 @@ public class SwingController : MonoBehaviour {
 			// Convert Json file into Jsonnode Object
 			JSONNode jsonInput = JSON.Parse(conn.text);
 			int swinglist = jsonInput.Count; 
-			string firstname = jsonInput[0]["email"];
-			Debug.Log("Data" + jsonInput);
-			Debug.Log (firstname + " hips");
-			Debug.Log (swinglist);
-			hip_debug.text = "" + firstname;
+			JSONArray swingDataX = jsonInput[swinglist]["accelx"].AsArray;
+			Debug.Log("jsoninp:"+jsonInput.ToString());
+			Debug.Log("swingdata:"+swingDataX.ToString());
+
+//			Debug.Log("Data" + firstname);
+//			Debug.Log (firstname + " hips");
+//			Debug.Log (swinglist);
+//			hip_debug.text = "" + firstname;
 			// Here you can handle multiple swings from the call, depending on your needs. Could be setted by button, by a for loop, etc;
 			//			int swinglist = jsonInput.Count;
 			//			int i = 9;
