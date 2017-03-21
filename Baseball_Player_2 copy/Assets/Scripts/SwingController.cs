@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using SimpleJSON;
+using System.Net; 
+using System.IO; 
 
 
 // This class is responsible for handling requests for the API and apply them on Swing Animations
@@ -15,6 +17,8 @@ public class SwingController : MonoBehaviour {
      **/
 	private string hip_url = "https://obscure-headland-45385.herokuapp.com/hips"; // right number
 	private string url = "https://obscure-headland-45385.herokuapp.com/swings"; // left number
+	private string url_start = "https://smartbat.herokuapp.com/start"; 
+	private string url_stop = "https://smartbat.herokuapp.com/stop";
 	private GameObject player;
 	private Animator playerAnimator;
 	public Text txt_debug;
@@ -120,13 +124,13 @@ public class SwingController : MonoBehaviour {
 //			batManager.SetPositionArrays(posX, posY, posZ);
 //			// Execute Bat Animation
 			//batManager.GenerateAnimation();
-			Debug.Log ("hip and swing data log inside of function");
-			Debug.Log (hip_data);
-			Debug.Log (swing_data);
-			if (hip_data >= swing_data) {
-				rhythm_score.text = ((double)swing_data / hip_data * 100).ToString ();
-			} else { rhythm_score.text = ((double)hip_data/swing_data *100).ToString();
-			}
+//			Debug.Log ("hip and swing data log inside of function");
+//			Debug.Log (hip_data);
+//			Debug.Log (swing_data);
+//			if (hip_data >= swing_data) {
+//				rhythm_score.text = ((double)swing_data / hip_data * 100).ToString ();
+//			} else { rhythm_score.text = ((double)hip_data/swing_data *100).ToString();
+//			}
 
 
 		}
@@ -221,6 +225,58 @@ public class SwingController : MonoBehaviour {
 
 		}
 	}
+
+	public void StartRecording()
+	{
+		SendRequest (url_start);	
+
+	}
+
+	public void StopRecording()
+	{
+		SendRequest (url_stop);
+
+	}
+
+	public string SendRequest(string url)
+	{
+		// Post request and in the future mongodb setup 
+		HttpWebRequest req = (HttpWebRequest) WebRequest.Create (url);
+		req.Method = "GET";
+		string responseData;  
+		using (var response = req.GetResponse ())
+		using (var responseStream = response.GetResponseStream ()) {
+			using (var reader = new StreamReader (responseStream)) { 
+				responseData = reader.ReadToEnd ();
+
+			}
+		}
+		return responseData;
+	}
+
+	public string PostToDatabase(string type)
+	{
+		// Post request and in the future mongodb setup 
+		HttpWebRequest req = (HttpWebRequest) WebRequest.Create (url);
+		req.Method = "POST";
+		req.ContentType = "application/json";
+		string responseData;  
+		using (var stream = req.GetRequestStream ()) 
+		//adds the type that we want to send the database 
+		using (var writer = new StreamWriter (stream)) {
+			var data = @"{""recording"":"""+type+@"""}";
+			writer.Write(data);
+		}
+		using (var response = req.GetResponse ())
+		using (var responseStream = response.GetResponseStream ()) {
+			using (var reader = new StreamReader (responseStream)) { 
+				responseData = reader.ReadToEnd ();
+
+			}
+		}
+		return responseData;
+	}
+
 	public void GetAPIData()
 	{
 		WWW conn = new WWW(url);
