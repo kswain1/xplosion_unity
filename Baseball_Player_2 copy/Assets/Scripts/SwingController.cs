@@ -15,8 +15,8 @@ public class SwingController : MonoBehaviour {
         "posX":xpositionVector, "posY":ypositionVector, "posZ":zpositionVector,
         "speed":sweetSpotVelocity}
      **/
-	private string hip_url = "https://obscure-headland-45385.herokuapp.com/hips"; // right number
-	private string url = "https://obscure-headland-45385.herokuapp.com/swings"; // left number
+	private string hip_url = "https://mechanicaltest.herokuapp.com/hips"; // right number
+	private string url = "https://mechanicaltest.herokuapp.com/swings"; // left number
 	private string url_start = "https://smartbat.herokuapp.com/start"; 
 	private string url_stop = "https://smartbat.herokuapp.com/stop";
 	private GameObject player;
